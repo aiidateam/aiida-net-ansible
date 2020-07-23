@@ -81,3 +81,5 @@ swapon (already done on quantum mobile cloud edition, search for which role)
 (Note I haven't found an issue with this yet)
 
 Move to https: Gio mentioned about role for letsencrypt (DNS authentiction), modify on fly apache config https certificate
+
+There is actually also an error with the site I have noted: that `/var/www/wp_aiida/wp-content/themes/fluidapp/javascripts/aiida_viewer.js` refers to a relative path for `dbexample.json`, dependendant on the current page being served. So it fails for pages other than the front index page.
