@@ -1,0 +1,82 @@
+---
+- name: Install ansible prerequisites
+  hosts: aws
+
+  vars:
+    # see https://github.com/geerlingguy/ansible-role-php/issues/226
+    php_version: '7.2'
+    php_default_version_debian: '7.2'
+    php_mysql_package: php7.2-mysql
+    
+    wordpress_admin_password: "REPLACE"
+    mysql_dbpassword: "REPLACE"
+
+  roles:
+
+  - name: install apache
+    tags: apache
+    become: true
+    role: geerlingguy.apache
+
+  - name: install php
+    tags: php
+    become: true
+    role: geerlingguy.php
+    vars:
+      php_packages_extra:
+      - libapache2-mod-php
+
+  - name: install mysql
+    tags: mysql
+    become: true
+    role: geerlingguy.mysql
+    vars:
+      mysql_databases:
+      - name: aiida_wp2
+      mysql_users:
+      - name: aiida
+        password: "{{ mysql_dbpassword }}"
+        priv: "aiida_wp2.*:ALL"
+
+  - name: add php mysql extension
+    tags: php
+    become: true
+    role: geerlingguy.php-mysql
+
+  - name: install and setup wordpress
+    tags: wordpress
+    become: true
+    role: oefenweb.wordpress
+    vars:
+      wordpress_installs:
+      - name: wordpress
+        dbname: aiida_wp2
+        dbuser: aiida
+        dbpass: "{{ mysql_dbpassword }}"
+        path: /var/www/wp_aiida
+        url: http://localhost
+        locale: en_US
+        title: AiiDA
+        admin_name: admin
+        admin_email: info@aiida.net
+        admin_password: '{{ wordpress_admin_password }}'
+        plugins:
+          - name: backwpup
+          - name: bwp-recaptcha
+            url: http://downloads.wordpress.org/plugin/bwp-recaptcha.zip
+          - name: contact-form-7
+          - name: disable-comments
+            url: https://downloads.wordpress.org/plugin/disable-comments.zip
+          - name: display-posts-shortcode
+          - name: nextgen-gallery
+          - name: wp-custom-post-rss-feed
+          - name: sp-news-and-widget
+        themes: []
+          # - name: fluidapp
+          #   activate: true
+          # fluidapp isn't listed by `wp-cli theme seasrch` and hasn't actually been supported for many years: https://themeforest.net/item/fluidapp-responsive-mobile-app-wordpress-theme/3726350/comments?page=9
+          # twentytwelve, twentythirteen, twentyfourteen, twentyfifteen, twentynineteen
+          # were installed but not active
+        users: {}
+        options: []
+        queries: []

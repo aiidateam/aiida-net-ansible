@@ -1,0 +1,225 @@
+
+{
+  "nodes": [
+    {
+      "calculation": false, 
+      "attributes": {
+        "uuid": "b1ce761f-d220-4489-8372-860851f3385e", 
+        "title": "Barium titanate", 
+        "CIF": "<span class=\"extlink\">structure.cif</span>", 
+        "ICSD code": "34637"
+      }, 
+      "group": 1, 
+      "name": "ICSD", 
+      "id": 1
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "cell": "[[4.01,0,0],[0,4.01,0],[0,0,4.01]]", 
+        "spacegroup": "Pm-3m (221)", 
+        "numatoms": "5", 
+        "uuid": "109e04b6-af85-4e3d-987e-287be5d35719", 
+        "positions": "..."
+      }, 
+      "group": 2, 
+      "name": "Structure", 
+      "id": 2
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "kpoints": "6x6x6", 
+        "ecutwfc": "50 Ry", 
+        "uuid": "285d3a74-5502-42f1-b75c-6a4e33c9b313", 
+        "ecutrho": "300 Ry"
+      }, 
+      "group": 3, 
+      "name": "Parameters", 
+      "id": 3
+    }, 
+    {
+      "calculation": true, 
+      "attributes": {
+        "code": "Quantum Espresso", 
+        "uuid": "a319fa5f-278d-46f1-b308-620a9dbdd558", 
+        "codeversion": "5.0.2", 
+        "completed": "Tue Jan 1st, 2013 00:00:00", 
+        "computer": "rosa.cscs.ch", 
+        "numCPUs": "32"
+      }, 
+      "group": 4, 
+      "name": "SCF", 
+      "id": 4
+    }, 
+    {
+      "calculation": true, 
+      "attributes": {
+        "code": "GULP", 
+        "uuid": "10326630-35af-4791-8de4-d770296501bf", 
+        "codeversion": "4.0", 
+        "completed": "Wed Jan 2nd, 2013 00:00:00", 
+        "computer": "aries.epfl.ch", 
+        "numCPUs": "8"
+      }, 
+      "group": 4, 
+      "name": "Relax", 
+      "id": 5
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "numelectrons": "40", 
+        "energy": "-210 Ry", 
+        "uuid": "2ce72fc3-741b-4b0e-adc1-dbd83546a147", 
+        "...": "..."
+      }, 
+      "group": 5, 
+      "name": "Results", 
+      "id": 6
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "cell": "[[3.99,0.01,0.01],[0.01,3.99,0.01],[0.01,0.01,3.99]]", 
+        "spacegroup": "R3m (160)", 
+        "numatoms": "5", 
+        "uuid": "73ac38c3-4b39-4bba-a52c-a5b8d4ec004a", 
+        "positions": "..."
+      }, 
+      "group": 2, 
+      "name": "Relaxed structure", 
+      "id": 7
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "numelectrons": "40", 
+        "energy": "-210.78 Ry", 
+        "uuid": "ded8a47b-c20e-4286-b4a5-14103c0912c5", 
+        "...": "..."
+      }, 
+      "group": 5, 
+      "name": "Results", 
+      "id": 8
+    }, 
+    {
+      "calculation": true, 
+      "attributes": {
+        "code": "Quantum Espresso", 
+        "uuid": "985aab2a-ee34-4323-8a82-94c099bd19d6", 
+        "codeversion": "5.0.2", 
+        "completed": "Wed Jan 2st, 2013 12:00:00", 
+        "computer": "rosa.cscs.ch", 
+        "numCPUs": "32"
+      }, 
+      "group": 4, 
+      "name": "SCF", 
+      "id": 9
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "numelectrons": "40", 
+        "energy": "-210.23 Ry", 
+        "uuid": "0ca2dac4-d28e-4268-af11-73100a59b3ae", 
+        "...": "..."
+      }, 
+      "group": 5, 
+      "name": "Results", 
+      "id": 10
+    }, 
+    {
+      "calculation": true, 
+      "attributes": {
+        "code": "distance script", 
+        "uuid": "dbc4d4aa-d0c4-4a81-9e79-470453273bca", 
+        "codeversion": "1.0.1", 
+        "completed": "Wed Jan 2st, 2013 18:00:00", 
+        "computer": "theossrv1.epfl.ch", 
+        "numCPUs": "1"
+      }, 
+      "group": 4, 
+      "name": "Distance", 
+      "id": 11
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "distance": "0.232372", 
+        "uuid": "745b2629-02a4-4dac-a5dd-e926e3e3fe41"
+      }, 
+      "group": 5, 
+      "name": "Results", 
+      "id": 12
+    }, 
+    {
+      "calculation": false, 
+      "attributes": {
+        "uuid": "62b33f20-8ca7-4e54-a0b0-21ba272227b2", 
+        "title": "A metrics between crystal structures", 
+        "journal": "Nature Materials", 
+        "authors": "First Author, Second Author", 
+        "filename": "<span class=\"extlink\">author2012.pdf</span>", 
+        "year": "2012"
+      }, 
+      "group": 1, 
+      "name": "PDF", 
+      "id": 13
+    }
+  ], 
+  "links": [
+    {
+      "source": 0, 
+      "target": 1
+    }, 
+    {
+      "source": 1, 
+      "target": 3
+    }, 
+    {
+      "source": 1, 
+      "target": 4
+    }, 
+    {
+      "source": 1, 
+      "target": 10
+    }, 
+    {
+      "source": 2, 
+      "target": 3
+    }, 
+    {
+      "source": 3, 
+      "target": 5
+    }, 
+    {
+      "source": 4, 
+      "target": 6
+    }, 
+    {
+      "source": 4, 
+      "target": 7
+    }, 
+    {
+      "source": 6, 
+      "target": 8
+    }, 
+    {
+      "source": 8, 
+      "target": 9
+    }, 
+    {
+      "source": 6, 
+      "target": 10
+    }, 
+    {
+      "source": 10, 
+      "target": 11
+    }, 
+    {
+      "source": 12, 
+      "target": 10
+    }
+  ]
+}
