@@ -11,17 +11,38 @@
     wordpress_admin_password: "REPLACE"
     mysql_dbpassword: "REPLACE"
 
-  roles:
+    wordpress_owner: www-data
+    wp_theme: fluidapp
+
+    backup_folder: backup
+
+  tasks:
 
   - name: install apache
     tags: apache
     become: true
-    role: geerlingguy.apache
+    import_role: 
+      name: geerlingguy.apache
+    vars:
+      apache_vhosts:
+      - servername: "www.aiida.net"
+        serveralias: "aiida.net"
+        serveradmin: "info@aiida.net"
+        documentroot: "/var/www/wp_aiida"
+        extra_parameters: |
+          # secondary alias
+          ServerAlias *.aiida.net
+          # block xml-rpc attacks
+          <files xmlrpc.php>
+            order allow,deny
+            deny from all
+          </files>
 
   - name: install php
     tags: php
     become: true
-    role: geerlingguy.php
+    import_role: 
+      name: geerlingguy.php
     vars:
       php_packages_extra:
       - libapache2-mod-php
@@ -29,7 +50,8 @@
   - name: install mysql
     tags: mysql
     become: true
-    role: geerlingguy.mysql
+    import_role: 
+      name: geerlingguy.mysql
     vars:
       mysql_databases:
       - name: aiida_wp2
@@ -41,12 +63,14 @@
   - name: add php mysql extension
     tags: php
     become: true
-    role: geerlingguy.php-mysql
+    import_role: 
+      name: geerlingguy.php-mysql
 
   - name: install and setup wordpress
     tags: wordpress
     become: true
-    role: oefenweb.wordpress
+    import_role: 
+      name: oefenweb.wordpress
     vars:
       wordpress_installs:
       - name: wordpress
@@ -60,6 +84,8 @@
         admin_name: admin
         admin_email: info@aiida.net
         admin_password: '{{ wordpress_admin_password }}'
+        owner: "{{ wordpress_owner }}"
+        group: "{{ wordpress_owner }}"
         plugins:
           - name: backwpup
           - name: bwp-recaptcha
@@ -72,11 +98,71 @@
           - name: wp-custom-post-rss-feed
           - name: sp-news-and-widget
         themes: []
-          # - name: fluidapp
+          # - name: "{{ wp_theme }}"
           #   activate: true
-          # fluidapp isn't listed by `wp-cli theme seasrch` and hasn't actually been supported for many years: https://themeforest.net/item/fluidapp-responsive-mobile-app-wordpress-theme/3726350/comments?page=9
-          # twentytwelve, twentythirteen, twentyfourteen, twentyfifteen, twentynineteen
-          # were installed but not active
         users: {}
         options: []
         queries: []
+
+  - name: write .htaccess file
+    # without this none of the page links work!
+    tags: wordpress
+    become: true
+    blockinfile:
+      path: /var/www/wp_aiida/.htaccess 
+      marker: "# {mark} WordPress"
+      owner: "{{ wordpress_owner }}"
+      group: "{{ wordpress_owner }}"
+      block: |
+        <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteBase /
+        RewriteRule ^index\.php$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.php [L]
+        </IfModule>
+
+  - name: copy {{ wp_theme }} theme backup
+    tags: restore
+    copy:
+      src: "{{ backup_folder }}/theme-{{ wp_theme }}.zip"
+      dest: "/tmp/"
+
+  - name: install {{ wp_theme }} theme backup
+    tags: restore
+    become: yes
+    become_user: "{{ wordpress_owner }}"
+    command:
+      cmd: "wp-cli --path=/var/www/wp_aiida theme install --activate /tmp/theme-{{ wp_theme }}.zip"
+      creates: "/var/www/wp_aiida/wp-content/themes/{{ wp_theme }}"
+
+  - name: copy mysql backup
+    tags: restore
+    copy:
+      src: "{{ backup_folder }}/mysql_table_dump.mysql"
+      dest: "/tmp/"
+    register: mysql_backup
+
+  - name: import mysql backup
+    tags: restore
+    when: mysql_backup.changed
+    command: wp-cli db import --path=/var/www/wp_aiida /tmp/mysql_table_dump.mysql
+
+  - name: copy other backup files
+    tags: restore
+    become: yes
+    copy:
+      src: "{{ backup_folder }}/{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: "{{ wordpress_owner }}"
+      group: "{{ wordpress_owner }}"
+      mode: "755"
+    loop:
+      # TODO should copy a zipped folder to /tmp/ then unzip into wp-content
+      - src: uploads
+        dest: /var/www/wp_aiida/wp-content/uploads
+      - src: gallery
+        dest: /var/www/wp_aiida/wp-content/gallery
+      - src: dbexample.json
+        dest: /var/www/wp_aiida/

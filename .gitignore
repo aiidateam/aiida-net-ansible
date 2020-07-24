@@ -133,4 +133,8 @@ dmypy.json
 *.swp
 .galaxy_install_info
 
-roles/
+roles/*/*
+# !roles/aiidateam.aiida_net/*
+
+backup/*
+!backup/dbexample.json
