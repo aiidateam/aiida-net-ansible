@@ -8,8 +8,8 @@
     php_default_version_debian: '7.2'
     php_mysql_package: php7.2-mysql
     
-    wordpress_admin_password: "REPLACE"
-    mysql_dbpassword: "REPLACE"
+    wordpress_admin_password: "M4%vBg8xCU3"
+    mysql_dbpassword: "aiida123"
 
     wordpress_owner: www-data
     wp_theme: fluidapp
@@ -159,10 +159,20 @@
       group: "{{ wordpress_owner }}"
       mode: "755"
     loop:
-      # TODO should copy a zipped folder to /tmp/ then unzip into wp-content
-      - src: uploads
-        dest: /var/www/wp_aiida/wp-content/uploads
-      - src: gallery
-        dest: /var/www/wp_aiida/wp-content/gallery
       - src: dbexample.json
         dest: /var/www/wp_aiida/
+
+  - name: copy other backup (zip) folders
+    tags: restore
+    become: yes
+    copy:
+      src: "{{ backup_folder }}/{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: "{{ wordpress_owner }}"
+      group: "{{ wordpress_owner }}"
+      mode: "755"
+    loop:
+      - src: uploads.zip
+        dest: /var/www/wp_aiida/wp-content/uploads
+      - src: gallery.zip
+        dest: /var/www/wp_aiida/wp-content/gallery

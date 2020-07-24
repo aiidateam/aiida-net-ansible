@@ -29,11 +29,19 @@ tar -xzf wordpress_backup-2020-07-14.tar.gz wordpress_backup/var_www/wp_aiida/wp
 tar -xzf wordpress_backup-2020-07-14.tar.gz wordpress_backup/var_www/wp_aiida/wp-content/themes/fluidapp
 ```
 
-6. Run the playbook: `ansible-playbook playbook.yml`
+6. zip the backup folders, e.g.
 
-7. The following tasks are currently manual:
+```console
+zip -r theme-fluidapp.zip fluidapp/*
+zip -r uploads.zip uploads/*
+zip -r gallery.zip gallery/*
+```
 
-- `sudo a2dissite 000-default` to disable this config which also runs on port 80
+7. Run the playbook: `ansible-playbook playbook.yml`
+
+8. The following tasks are currently manual:
+
+- `sudo a2dissite 000-default` to disable this config which also runs on port 80 (not sure why/when this is created?)
 
 - (optional) ensure all folders/files are owned by the wordpress user
 
