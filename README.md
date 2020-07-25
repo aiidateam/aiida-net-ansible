@@ -1,8 +1,8 @@
 # aiida-net-ansible
 
-Configuration for managing the [aiida.net](http://www.aiida.net/) website
+Configuration for managing the [aiida.net](http://www.aiida.net/) website.
 
-The site is deployed on [AWS](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1), on the `aiidatheos` account and generated *via* [Wordpress](https://wordpress.org/).
+The site is deployed on [AWS](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1), on the `aiidatheos` account and served *via* the [Wordpress](https://wordpress.org/) content management system, itself built on the LAMP (Linux, Apache, MySQL, PHP) web service stack.
 
 To run:
 
@@ -67,17 +67,31 @@ Gio mentioned: important thing to remember: be careful on issue of swap file. Mu
 swapon (already done on quantum mobile cloud edition, search for which role)
 (Note I haven't found an issue with this yet)
 
-Move to https: Gio mentioned about role for letsencrypt (DNS authentiction), modify on fly apache config https certificate
+Move to https: Gio mentioned about role for letsencrypt (DNS authentiction), modify on fly apache config https certificate. Possible resources:
+
+- https://letsencrypt.org/getting-started/#
+- https://www.wpbeginner.com/wp-tutorials/how-to-add-ssl-and-https-in-wordpress/
+- https://websitesetup.org/http-to-https-wordpress/
+- https://www.reddit.com/r/ansible/comments/9eyyug/is_there_a_way_to_fully_automate_setting_up_ssl/
+- https://github.com/systemli/ansible-role-letsencrypt
+- https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04
 
 There is actually also an error with the site I have noted: that `/var/www/wp_aiida/wp-content/themes/fluidapp/javascripts/aiida_viewer.js` refers to a relative path for `dbexample.json`, dependendant on the current page being served. So it fails for pages other than the front index page.
+https://api.jquery.com/jQuery.getJSON/
 
 The fluidapp theme isn't listed by `wp-cli theme search` (i.e. can't be directly installed) and hasn't actually been supported for many years: <https://themeforest.net/item/fluidapp-responsive-mobile-app-wordpress-theme/3726350/comments?page=9>.
 So ideally we would replace this
+
+- <https://www.wpbeginner.com/showcase/best-wordpress-themes/>
+
+apache docs do netion about not using `.htaccess` files? https://httpd.apache.org/docs/2.4/howto/htaccess.html:
+
+> You should avoid using .htaccess files completely if you have access to httpd main server config file. Using .htaccess files slows down your Apache http server. Any directive that you can include in a .htaccess file is better set in a Directory block, as it will have the same effect with better performance.
 
 ## Notes
 
 For working with the test site `new-www.aiida.net`, just change the `ServerName` (in `/etc/apache2/sites-available/vhosts.conf`) to this address,
 and also find and replace `www.aiida.net` in the mysql dump (before importing).
 
-On the current server there is a `/var/www/aiida` folder, but that only contains a minimal site index with the message:
+On the old server there is a `/var/www/aiida` folder, but that only contains a minimal site index with the message:
 "Dear users, starting from today 29 October 2013 and for the next few days the AiiDA home site will be offline for updates and a new setup, more contents and features will be soon available."
