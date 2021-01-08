@@ -133,6 +133,8 @@ dmypy.json
 *.swp
 .galaxy_install_info
 
+.vault_pass
+
 roles/*/*
 # !roles/aiidateam.aiida_net/*
 
