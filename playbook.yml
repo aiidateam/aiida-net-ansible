@@ -8,8 +8,8 @@
     php_default_version_debian: '7.2'
     php_mysql_package: php7.2-mysql
     
-    wordpress_admin_password: "M4%vBg8xCU3"
-    mysql_dbpassword: "aiida123"
+    wordpress_admin_password: REPLACE
+    mysql_dbpassword: REPLACE
 
     wordpress_owner: www-data
     wp_theme: fluidapp

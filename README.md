@@ -15,14 +15,14 @@ ansible-galaxy install -r requirements.yml
 
 2. Create an Ubuntu VM on AWS (18.04, t2.micro and expose port 80)
 
-3. Replace IP in hosts.yml
+3. Replace IP in `hosts.yml` file
 
-4. Replace `wordpress_admin_password` and `mysql_dbpassword` in playbook.yml
+4. Replace `wordpress_admin_password` and `mysql_dbpassword` in `playbook.yml` file
 
 5. Extract user data from latest backup into `backup` folder (e.g. from theossrv3), e.g.:
 
 ```console
-tar -xzf wordpress_backup-2020-07-14.tar.gz wordpress_backup/mysql_table_dump.mysql
+tar -xzf wordpress_backup-2021-01-08.tar.gz wordpress_backup/mysql_table_dump.mysql
 tar -xzf wordpress_backup-2020-07-14.tar.gz wordpress_backup/var_www/wp_aiida/dbexample.json
 tar -xzf wordpress_backup-2020-07-14.tar.gz wordpress_backup/var_www/wp_aiida/wp-content/uploads
 tar -xzf wordpress_backup-2020-07-14.tar.gz wordpress_backup/var_www/wp_aiida/wp-content/gallery
@@ -41,7 +41,7 @@ zip -r gallery.zip gallery/*
 
 8. The following tasks are currently manual:
 
-- `sudo a2dissite 000-default` to disable this config which also runs on port 80 (not sure why/when this is created?)
+- `sudo a2dissite 000-default` to disable this config which also runs on port 80 and overrides the actual site config at `/etc/apache2/sites-available/vhosts.conf` (not sure why/when this is created?)
 
 - (optional) ensure all folders/files are owned by the wordpress user
 
@@ -61,11 +61,13 @@ wp-cli --path=/var/www/wp_aiida plugin activate disable-canonical-redirect
 
 ## TODO
 
-It is not super clear, the distinction between installation folders/files (i.e. that should only change due to upgrades) and user folders/files (i.e. that will change based on the content and styling of the website). I think above I have identified the only content that needs to be restored, but this should be checked. (for the theme it should probably only be some aspects like custom css and js)
+With wordpress, it is not super clear, the distinction between installation folders/files (i.e. that should only change due to upgrades) and user folders/files (i.e. that will change based on the content and styling of the website). I think above I have identified the only content that needs to be restored, but this should be checked. (for the theme it should also probably only be some aspects like custom css and js)
 
-Gio mentioned: important thing to remember: be careful on issue of swap file. Must create one other mysql will die (500 error)
-swapon (already done on quantum mobile cloud edition, search for which role)
-(Note I haven't found an issue with this yet)
+For mysql, Gio mentioned:
+> important thing to remember: be careful on issue of swap file. Must create one other mysql will die (500 error)
+> swapon (already done on quantum mobile cloud edition, search for which role)
+
+(Note I have not found an issue with this yet though)
 
 Move to https: Gio mentioned about role for letsencrypt (DNS authentiction), modify on fly apache config https certificate. Possible resources:
 
@@ -76,15 +78,15 @@ Move to https: Gio mentioned about role for letsencrypt (DNS authentiction), mod
 - https://github.com/systemli/ansible-role-letsencrypt
 - https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-18-04
 
-There is actually also an error with the site I have noted: that `/var/www/wp_aiida/wp-content/themes/fluidapp/javascripts/aiida_viewer.js` refers to a relative path for `dbexample.json`, dependendant on the current page being served. So it fails for pages other than the front index page.
-https://api.jquery.com/jQuery.getJSON/
+There is an error with the existing site I have noted: that `/var/www/wp_aiida/wp-content/themes/fluidapp/javascripts/aiida_viewer.js` refers to a relative path for `dbexample.json`, which is dependant on the current page being served. So it fails for pages other than the front index page.
+(possible fix https://api.jquery.com/jQuery.getJSON/)
 
 The fluidapp theme isn't listed by `wp-cli theme search` (i.e. can't be directly installed) and hasn't actually been supported for many years: <https://themeforest.net/item/fluidapp-responsive-mobile-app-wordpress-theme/3726350/comments?page=9>.
 So ideally we would replace this
 
 - <https://www.wpbeginner.com/showcase/best-wordpress-themes/>
 
-apache docs do netion about not using `.htaccess` files? https://httpd.apache.org/docs/2.4/howto/htaccess.html:
+apache docs mention about not using `.htaccess` files (https://httpd.apache.org/docs/2.4/howto/htaccess.html)?
 
 > You should avoid using .htaccess files completely if you have access to httpd main server config file. Using .htaccess files slows down your Apache http server. Any directive that you can include in a .htaccess file is better set in a Directory block, as it will have the same effect with better performance.
 
