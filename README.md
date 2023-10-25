@@ -1,3 +1,5 @@
+#### Note: This repository is archived due to being superseded by https://github.com/aiidateam/aiida-website (deployed via readthedocs).
+
 # aiida-net-ansible
 
 Configuration for managing the [aiida.net](http://www.aiida.net/) website.
